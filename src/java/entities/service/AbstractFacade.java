@@ -7,6 +7,8 @@ package entities.service;
 
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
 
 /**
  *
@@ -35,6 +37,37 @@ public abstract class AbstractFacade<T> {
 
     public T find(Object id) {
         return getEntityManager().find(entityClass, id);
+    }
+    
+    public List<T> findQuery(List<Condition> conditions) {
+        
+        // create the query from the conditions provided
+        CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+        javax.persistence.criteria.CriteriaQuery<T> cq = cb.createQuery(entityClass);
+        javax.persistence.criteria.Root<T> root = cq.from(entityClass);
+        Predicate predicate = null;
+        cq.select(root);
+        for (Condition condition : conditions) {
+            String field = condition.getField();
+            String value = condition.getValue();
+            switch (condition.getType()) {
+                case EQUALS:
+                    predicate = predicate == null 
+                            ? cb.equal(root.get(field), value) 
+                            : cb.and(predicate, cb.equal(root.get(field), value));
+                    break;
+                    
+                case EMPTY:
+                    // do something ?
+                    break;
+            }
+        }
+        
+        if (predicate != null) {
+            cq.where(predicate);
+        }
+        return getEntityManager().createQuery(cq).getResultList();
+                
     }
 
     public List<T> findAll() {

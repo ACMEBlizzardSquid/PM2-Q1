@@ -6,7 +6,9 @@
 package entities.service;
 
 import entities.Customer;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.HashSet;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -18,6 +20,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 /**
  *
@@ -61,10 +64,17 @@ public class CustomerFacadeREST extends AbstractFacade<Customer> {
     }
 
     @GET
-    @Override
     @Produces({"application/xml", "application/json"})
-    public List<Customer> findAll() {
-        return super.findAll();
+    public List<Customer> findAll(
+            @QueryParam("state") String state
+    ) {
+        
+        // generate the list of conditions for the query
+        List<Condition> conditions = new ArrayList<Condition>();
+        conditions.add(new Condition("state", state));
+        
+        // perform a query on the db
+        return super.findQuery(conditions);
     }
 
     @GET
