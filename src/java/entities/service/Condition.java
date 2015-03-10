@@ -11,6 +11,7 @@ public class Condition {
     private String field;
     public static enum Type {
         EQUALS,
+        LIKE,
         GREATER_THAN_EQUALS,
         LESS_THAN_EQUALS,
         GREATER_THAN,
@@ -23,6 +24,9 @@ public class Condition {
         
         if (condition == null) {
             // do something ?
+        } else if (condition.startsWith("|")) {
+            type = Type.LIKE;
+            value = "%" + condition.substring(1) + "%";
         } else if (condition.startsWith("=")) {
             type = Type.EQUALS;
             value = condition.substring(1);

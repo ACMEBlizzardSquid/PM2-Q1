@@ -56,6 +56,11 @@ public abstract class AbstractFacade<T> {
                             ? cb.equal(root.get(field), value) 
                             : cb.and(predicate, cb.equal(root.get(field), value));
                     break;
+                  
+                case LIKE:
+                    predicate = predicate == null
+                            ? cb.like(root.<String>get(field), value)
+                            : cb.and(predicate, cb.like(root.<String>get(field), value));
                     
                 case EMPTY:
                     // do something ?
