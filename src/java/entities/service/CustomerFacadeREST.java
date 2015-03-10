@@ -66,11 +66,27 @@ public class CustomerFacadeREST extends AbstractFacade<Customer> {
     @GET
     @Produces({"application/xml", "application/json"})
     public List<Customer> findAll(
+            @QueryParam("addressline1") String addressline1,
+            @QueryParam("addressline2") String addressline2,
+            @QueryParam("city") String city,
+            @QueryParam("creditLimit") String creditLimit,
+            @QueryParam("email") String email,
+            @QueryParam("fax") String fax,
+            @QueryParam("name") String name,
+            @QueryParam("phone") String phone,
             @QueryParam("state") String state
     ) {
         
         // generate the list of conditions for the query
         List<Condition> conditions = new ArrayList<Condition>();
+        conditions.add(new Condition("addressline1", addressline1));
+        conditions.add(new Condition("addressline2", addressline2));
+        conditions.add(new Condition("city", city));
+        conditions.add(new Condition("creditLimit", creditLimit));
+        conditions.add(new Condition("email", email));
+        conditions.add(new Condition("fax", fax));
+        conditions.add(new Condition("name", name));
+        conditions.add(new Condition("phone", phone));
         conditions.add(new Condition("state", state));
         
         // perform a query on the db
